@@ -227,10 +227,7 @@ export default {
       
       await this.$store.dispatch('deleteItemConfirm', this.currentContent.id)
       this.submitResponse == 'form submitted' ? (this.closeDeleteDialog(), this.snackBar = true, this.text = 'Content was Deleted') : ''
-
-      setTimeout(() => {
-        this.submitResponse == 'form submitted' ? (window.location.reload()) : null
-      }, 2000)
+     this.getContents()
 
     },
 
