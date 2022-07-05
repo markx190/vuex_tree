@@ -23,12 +23,6 @@ export default new Vuex.Store({
     editDialog: false,
     showEditDialog: '',
     dialogDelete: false,
-    inputContent: {
-      id: null,
-      title: "",
-      description: "",
-      published: ""
-    },
     submitted: false,
     snackBar: false,
     text: '',
@@ -144,24 +138,21 @@ export default new Vuex.Store({
 
     async saveContent(context, payload) {
       console.log('save data: ', payload)
-      await axios.post(`${this.state.apiURL}/list`, payload)
+      return await axios.post(`${this.state.apiURL}/list`, payload)
         .then((response) => {
           context.commit('setSubmitResponse', 'form submitted');
           let res = response.status
-          // context.commit("addContent", payload);
-          context.commit("addContent", response.data)
-          console.log('response: ', res)
-          this.state.currentContent.published = payload.published ? 'Published' : 'Pending'
+          return res
         })
         .catch((e) => {
-          console.log(e.message);
-          this.formMessage = 'Please Complete the Details';
+          console.log('uy: ', e.message);
+          context.commit('setSubmitResponse', e.message);
         });
     },
 
     editContent(context, payload) {
       Promise.all([
-        axios.get(`${this.state.apiURL}/list/${payload.id}`),
+      axios.get(`${this.state.apiURL}/list/${payload.id}`),
       ])
         .then(response => {
           context.commit('setCurrentContent', response[0].data)
@@ -173,15 +164,16 @@ export default new Vuex.Store({
 
     async saveEditContent(context, payload) {
       // payload.published = payload.published === 'Published' ? true : false;
-      await axios.put(`${this.state.apiURL}/list/${payload.id}`, payload)
+      return await axios.put(`${this.state.apiURL}/list/${payload.id}`, payload)
         .then((response) => {
-          console.log('response: ', response)
           context.commit("updateContent", response.data);
           context.commit('setSubmitResponse', 'form submitted')
+          let res = response.status
+          return res
         })
         .catch((e) => {
           console.log(e.message);
-          this.formMessage = 'Please Complete the Details';
+          context.commit('setSubmitResponse', e.message);
         });
     },
 
