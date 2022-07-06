@@ -54,7 +54,6 @@
                   <v-checkbox v-if="form == 'Edit Content' || currentContent.published" v-model="checkBox" 
                      :label="`Status: ${checkBox ? 'Published' : 'Pending'}`" >
                   </v-checkbox>
-                 
                   <v-btn color="success" ref="submit" class="mr-4" type="submit">
                     Submit
                   </v-btn>
@@ -108,26 +107,15 @@ export default {
         id: 0,
         title: "",
         description: "",
-        published: ""
+        published: null
       },
       valid: true,
       name: '',
       nameRules: [
-        v => !!v || 'Name is required',
+        v => !!v || 'Content Name is required',
         v => (v && v.length <= 10) || 'Name must be less than 10 characters',
       ],
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],
       select: null,
-      items: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4',
-      ],
       checkbox: false,
       form: "",
       formAction: ""
@@ -172,13 +160,14 @@ export default {
 
     async editContent(content) {
       console.log('idx: ', content.published)
+    
       this.form = "Edit Content"
       this.formAction = "saveEditContent"
       this.currentContent = {
         id: content.id,
         title: content.title,
         description: content.description,
-        published: content.published
+        published: content.published ? this.checkBox == true : false
       }
       this.dialog = true
     },
@@ -189,6 +178,7 @@ export default {
     },
     resetForm() {
       this.$refs.form.reset()
+      this.formMessage = ''
     },
 
     async saveEditContent() {
@@ -219,7 +209,6 @@ export default {
       this.currentContent = {
         id: content.id
       }
-      // await this.$store.dispatch('deleteContent', this.currentContent.id)
       this.dialogDelete = true
     },
 
